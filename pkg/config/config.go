@@ -7,8 +7,24 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+type Moves struct {
+	List []Move
+	Max  int
+	Min  int
+}
+
+type Move struct {
+	Name   string
+	Counts int
+}
+
+type Text struct {
+	Size float32
+}
+
 type Config struct {
-	Moves []string
+	Moves Moves
+	Text  Text
 }
 
 func Load(fileName string) (*Config, error) {
