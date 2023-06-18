@@ -55,7 +55,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	d := display.New(c.Text.Size)
+	d := display.New(c)
 	go renderText(c, d.Ch)
 	d.Render()
 
