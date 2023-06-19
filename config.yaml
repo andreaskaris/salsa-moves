@@ -1,24 +1,40 @@
 moves:
-  list:
-    - name: "Swing Step"
-      counts: 8
-    - name: "Two Corner Swing"
-      counts: 8
-    - name: "Suzie Q"
-      counts: 8
-    - name: "Invert 1/5"
-      counts: 8
-    - name: "Side charge"
-      counts: 16
-    - name: "Left turn"
-      counts: 8
-    - name: "Right turn"
-      counts: 8
-    - name: "Broken left turn"
-      counts: 8
-    - name: "Pachanga"
-      counts: 8
-  max: 5
-  min: 2
+    list:
+        - name: Broken left turn
+          counts: 8
+        - name: Chuck step
+          counts: 8
+        - name: Hook turn
+          counts: 8
+        - name: Invert 1/5
+          counts: 8
+        - name: Left turn
+          counts: 8
+        - name: Pachanga
+          counts: 8
+        - name: Pachanga walk
+          counts: 16
+        - name: Reverse grapevine
+          counts: 8
+        - name: Reverse grapevine (Nelson)
+          counts: 8
+        - name: Right turn
+          counts: 8
+        - name: Side charge
+          counts: 16
+        - name: Step touch
+          counts: 8
+        - name: Suzie Q
+          counts: 8
+        - name: Swing Step
+          counts: 8
+        - name: Two Corner Swing
+          counts: 8
+    max: 5
+    min: 2
 text:
-  size: 24
+    size: 40
+song:
+    bpm: 120
+    sleepforrand: 10
+    sleepforconst: 5
