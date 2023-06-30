@@ -4,16 +4,24 @@ moves:
           counts: 8
         - name: Chuck step
           counts: 8
+        - name: Hook step
+          counts: 8
         - name: Hook turn
+          counts: 8
+        - name: In and outs
           counts: 8
         - name: Invert 1/5
           counts: 8
         - name: Left turn
           counts: 8
+        - name: Mambo taps
+          counts: 8
         - name: Pachanga
           counts: 8
         - name: Pachanga walk
           counts: 16
+        - name: Push step
+          counts: 8
         - name: Reverse grapevine
           counts: 8
         - name: Reverse grapevine (Nelson)
@@ -22,6 +30,8 @@ moves:
           counts: 8
         - name: Side charge
           counts: 16
+        - name: Spot turn
+          counts: 8
         - name: Step touch
           counts: 8
         - name: Suzie Q
@@ -35,6 +45,6 @@ moves:
 text:
     size: 40
 song:
-    bpm: 120
-    sleepforrand: 10
+    bpm: 90
+    sleepforrand: 5
     sleepforconst: 5
