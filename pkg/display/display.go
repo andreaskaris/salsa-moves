@@ -159,7 +159,7 @@ func (d *Display) optionsScreen() fyne.CanvasObject {
 	textSizeSlide := widget.NewSliderWithData(10, 40, textSizeData)
 	textSizeSlide.Step = 1.0
 
-	moves := d.config.GetMoveStringList()
+	moves := d.config.GetMoveStringList(config.DefaultMoveList)
 	moveList := binding.BindStringList(&moves)
 	list := widget.NewListWithData(
 		moveList,
@@ -184,8 +184,8 @@ func (d *Display) optionsScreen() fyne.CanvasObject {
 				if err != nil {
 					log.Fatalf("error parsing move value on delete, err: %q", err)
 				}
-				d.config.DeleteMove(move.Name)
-				moveList.Set(d.config.GetMoveStringList())
+				d.config.DeleteMove(config.DefaultMoveList, move.Name)
+				moveList.Set(d.config.GetMoveStringList(config.DefaultMoveList))
 			}
 		})
 
@@ -206,11 +206,11 @@ func (d *Display) optionsScreen() fyne.CanvasObject {
 			log.Fatalf("error getting move counts, err: %q", err)
 		}
 		move := config.Move{Name: moveName, Counts: moveCounts}
-		d.config.AddMove(move)
+		d.config.AddMove(config.DefaultMoveList, move)
 		if err != nil {
 			log.Fatal(err)
 		}
-		moveList.Set(d.config.GetMoveStringList())
+		moveList.Set(d.config.GetMoveStringList(config.DefaultMoveList))
 	})
 
 	saveButton := widget.NewButton("Save configuration", func() {
@@ -275,12 +275,13 @@ func (d *Display) movesScreen() fyne.CanvasObject {
 			}
 
 			tasks := []string{""}
-			numSequences := d.config.Moves.Min + rand.Intn(d.config.Moves.Max-d.config.Moves.Min)
+			numSequences := d.config.GetMinMoves() + rand.Intn(d.config.GetMaxMoves()-d.config.GetMinMoves())
 			movesCounts := 0
+			moveList := d.config.GetMoveList(config.DefaultMoveList)
 			for i := 0; i < numSequences; i++ {
-				r := rand.Intn(len(d.config.Moves.List))
-				tasks = append(tasks, d.config.Moves.List[r].Name)
-				movesCounts += d.config.Moves.List[r].Counts
+				r := rand.Intn(len(moveList))
+				tasks = append(tasks, moveList[r].Name)
+				movesCounts += moveList[r].Counts
 			}
 			refresh(&color.RGBA{0xff, 0x00, 0x00, 0xff}, tasks...)
 

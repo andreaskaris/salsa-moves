@@ -10,10 +10,12 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+const (
+	DefaultMoveList = "Mambo on 2"
+)
+
 type Moves struct {
-	List []Move
-	Max  int
-	Min  int
+	List map[string][]Move
 }
 
 type Move struct {
@@ -51,6 +53,8 @@ type Text struct {
 
 type Config struct {
 	Moves    Moves
+	MaxMoves int
+	MinMoves int
 	Text     Text
 	Song     Song
 	fileName string
@@ -78,52 +82,53 @@ func (c *Config) Save() error {
 	return os.WriteFile(c.fileName, out, 0640)
 }
 
-func (c *Config) AddMove(move Move) {
+// AddMove adds the provided move to the provided list.
+func (c *Config) AddMove(listName string, move Move) {
 	if c.Moves.List == nil {
-		c.Moves.List = []Move{}
+		c.Moves.List = make(map[string][]Move)
 	}
-	c.Moves.List = append(c.Moves.List, move)
-	sort.Slice(c.Moves.List, func(i, j int) bool {
-		return c.Moves.List[i].Name < c.Moves.List[j].Name
+	c.Moves.List[listName] = append(c.Moves.List[listName], move)
+	sort.Slice(c.Moves.List[listName], func(i, j int) bool {
+		return c.Moves.List[listName][i].Name < c.Moves.List[listName][j].Name
 	})
 }
 
-func (c *Config) DeleteMove(name string) {
-	moves := c.GetMoveList()
-	for i := range moves {
-		if moves[i].Name == name {
-			c.Moves.List = append(moves[:i], moves[i+1:]...)
+// DeleteMove deletes the provided move from the provided list.
+func (c *Config) DeleteMove(listName string, name string) {
+	for i := range c.Moves.List[listName] {
+		if c.Moves.List[listName][i].Name == name {
+			c.Moves.List[listName] = append(c.Moves.List[listName][:i], c.Moves.List[listName][i+1:]...)
 			return
 		}
 	}
 }
 
-func (c *Config) GetMoveList() []Move {
-	return c.Moves.List
+func (c *Config) GetMoveList(listName string) []Move {
+	return c.Moves.List[listName]
 }
 
-func (c *Config) GetMoveStringList() []string {
+func (c *Config) GetMoveStringList(listName string) []string {
 	var moves []string
-	for _, m := range c.GetMoveList() {
+	for _, m := range c.GetMoveList(listName) {
 		moves = append(moves, m.String())
 	}
 	return moves
 }
 
 func (c *Config) SetMaxMoves(max int) {
-	c.Moves.Max = max
+	c.MaxMoves = max
 }
 
 func (c *Config) GetMaxMoves() int {
-	return c.Moves.Max
+	return c.MaxMoves
 }
 
 func (c *Config) SetMinMoves(min int) {
-	c.Moves.Min = min
+	c.MinMoves = min
 }
 
 func (c *Config) GetMinMoves() int {
-	return c.Moves.Min
+	return c.MinMoves
 }
 
 func (c *Config) GetBPM() int {
