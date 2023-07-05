@@ -14,9 +14,8 @@ const (
 func main() {
 	c, err := config.Load(configFile)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("error loading config file %s, %q", configFile, err)
 	}
 	d := display.New(c)
 	d.Render()
-
 }

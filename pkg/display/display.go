@@ -3,6 +3,7 @@ package display
 import (
 	"context"
 	"fmt"
+	"log"
 	"math/rand"
 	"time"
 
@@ -73,7 +74,7 @@ func (d *Display) optionsScreen() fyne.CanvasObject {
 	bpmData.AddListener(binding.NewDataListener(func() {
 		bpm, err := bpmData.Get()
 		if err != nil {
-			fmt.Println(err)
+			log.Fatalf("error getting bpmData %f, err: %q", bpmData, err)
 		}
 		d.config.SetBPM(int(bpm))
 	}))
@@ -88,7 +89,7 @@ func (d *Display) optionsScreen() fyne.CanvasObject {
 	sleepForRandData.AddListener(binding.NewDataListener(func() {
 		data, err := sleepForRandData.Get()
 		if err != nil {
-			fmt.Println(err)
+			log.Fatalf("error getting sleepForRandData %f, err: %q", sleepForRandData, err)
 		}
 		d.config.SetSleepForRand(int(data))
 	}))
@@ -103,7 +104,7 @@ func (d *Display) optionsScreen() fyne.CanvasObject {
 	sleepForConstData.AddListener(binding.NewDataListener(func() {
 		data, err := sleepForConstData.Get()
 		if err != nil {
-			fmt.Println(err)
+			log.Fatalf("error getting sleepForConstData %f, err: %q", sleepForConstData, err)
 		}
 		d.config.SetSleepForConst(int(data))
 	}))
@@ -118,7 +119,7 @@ func (d *Display) optionsScreen() fyne.CanvasObject {
 	minMovesData.AddListener(binding.NewDataListener(func() {
 		data, err := minMovesData.Get()
 		if err != nil {
-			fmt.Println(err)
+			log.Fatalf("error getting minMovesData %f, err: %q", minMovesData, err)
 		}
 		d.config.SetMinMoves(int(data))
 	}))
@@ -133,7 +134,7 @@ func (d *Display) optionsScreen() fyne.CanvasObject {
 	maxMovesData.AddListener(binding.NewDataListener(func() {
 		data, err := maxMovesData.Get()
 		if err != nil {
-			fmt.Println(err)
+			log.Fatalf("error getting maxMovesData %f, err: %q", maxMovesData, err)
 		}
 		d.config.SetMaxMoves(int(data))
 	}))
@@ -148,7 +149,7 @@ func (d *Display) optionsScreen() fyne.CanvasObject {
 	textSizeData.AddListener(binding.NewDataListener(func() {
 		data, err := textSizeData.Get()
 		if err != nil {
-			fmt.Println(err)
+			log.Fatalf("error getting textSizeData %f, err: %q", textSizeData, err)
 		}
 		d.config.SetTextSize(int(data))
 	}))
@@ -181,7 +182,7 @@ func (d *Display) optionsScreen() fyne.CanvasObject {
 				val, _ := f.Get()
 				move, err := config.ParseMove(val)
 				if err != nil {
-					fmt.Println(err)
+					log.Fatalf("error parsing move value on delete, err: %q", err)
 				}
 				d.config.DeleteMove(move.Name)
 				moveList.Set(d.config.GetMoveStringList())
@@ -198,16 +199,16 @@ func (d *Display) optionsScreen() fyne.CanvasObject {
 	addMoveButton := widget.NewButton("Add move", func() {
 		moveName, err := moveNameData.Get()
 		if err != nil {
-			fmt.Println(err)
+			log.Fatalf("error getting move name, err: %q", err)
 		}
 		moveCounts, err := moveCountsData.Get()
 		if err != nil {
-			fmt.Println(err)
+			log.Fatalf("error getting move counts, err: %q", err)
 		}
 		move := config.Move{Name: moveName, Counts: moveCounts}
 		d.config.AddMove(move)
 		if err != nil {
-			fmt.Println(err)
+			log.Fatal(err)
 		}
 		moveList.Set(d.config.GetMoveStringList())
 	})
@@ -215,7 +216,7 @@ func (d *Display) optionsScreen() fyne.CanvasObject {
 	saveButton := widget.NewButton("Save configuration", func() {
 		err := d.config.Save()
 		if err != nil {
-			fmt.Println(err)
+			log.Fatalf("error saving data to file, err: %q", err)
 		}
 	})
 
