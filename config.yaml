@@ -27,6 +27,8 @@ moves:
               counts: 8
             - name: Reverse grapevine (Nelson)
               counts: 8
+            - name: Reverse walks
+              counts: 8
             - name: Right turn
               counts: 8
             - name: Side charge
@@ -47,9 +49,10 @@ moves:
               counts: 8
 maxmoves: 5
 minmoves: 2
+probabilityrandomsequence: 20
 text:
     size: 40
 song:
-    bpm: 90
+    bpm: 100
     sleepforrand: 5
     sleepforconst: 5

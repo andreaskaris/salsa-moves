@@ -144,6 +144,21 @@ func (d *Display) optionsScreen() fyne.CanvasObject {
 	maxMovesSlide := widget.NewSliderWithData(1, 10, maxMovesData)
 	maxMovesSlide.Step = 1.0
 
+	probabilityRandomSequenceFloat := float64(d.config.GetProbabilityRandomSequence())
+	probabilityRandomSequenceData := binding.BindFloat(&probabilityRandomSequenceFloat)
+	probabilityRandomSequenceData.AddListener(binding.NewDataListener(func() {
+		data, err := probabilityRandomSequenceData.Get()
+		if err != nil {
+			log.Fatalf("error getting probabilityRandomSequenceData %f, err: %q", probabilityRandomSequenceData, err)
+		}
+		d.config.SetProbabilityRandomSequence(int(data))
+	}))
+	probabilityRandomSequenceLabel := widget.NewLabelWithData(binding.FloatToStringWithFormat(probabilityRandomSequenceData, "Probability random sequence: %0.2f"))
+	probabilityRandomSequenceEntry := widget.NewEntryWithData(binding.FloatToString(probabilityRandomSequenceData))
+	probabilityRandomSequenceFloats := container.NewGridWithColumns(2, probabilityRandomSequenceLabel, probabilityRandomSequenceEntry)
+	probabilityRandomSequenceSlide := widget.NewSliderWithData(0, 100, probabilityRandomSequenceData)
+	probabilityRandomSequenceSlide.Step = 5.0
+
 	textSizeFloat := float64(d.config.GetTextSize())
 	textSizeData := binding.BindFloat(&textSizeFloat)
 	textSizeData.AddListener(binding.NewDataListener(func() {
@@ -227,6 +242,7 @@ func (d *Display) optionsScreen() fyne.CanvasObject {
 		sleepForConstFloats, sleepForConstSlide, widget.NewSeparator(),
 		minMovesFloats, minMovesSlide, widget.NewSeparator(),
 		maxMovesFloats, maxMovesSlide, widget.NewSeparator(),
+		probabilityRandomSequenceFloats, probabilityRandomSequenceSlide, widget.NewSeparator(),
 		textSizeFloats, textSizeSlide, widget.NewSeparator(),
 		addMoveLine, widget.NewSeparator(),
 		addMoveButton, widget.NewSeparator(),
@@ -254,7 +270,10 @@ func (d *Display) movesScreen() fyne.CanvasObject {
 
 	go func() {
 		for {
-			sleepFor := rand.Intn(d.config.GetSleepForRand()) + d.config.GetSleepForConst()
+			sleepFor := d.config.GetSleepForConst()
+			if d.config.GetSleepForRand() > 0 {
+				sleepFor += rand.Intn(d.config.GetSleepForRand() + 1)
+			}
 			ticker := time.NewTicker(1 * time.Second)
 			defer ticker.Stop()
 		inner:
@@ -275,10 +294,17 @@ func (d *Display) movesScreen() fyne.CanvasObject {
 			}
 
 			tasks := []string{""}
-			numSequences := d.config.GetMinMoves() + rand.Intn(d.config.GetMaxMoves()-d.config.GetMinMoves())
+			numSequences := d.config.GetMinMoves() + rand.Intn(d.config.GetMaxMoves()-d.config.GetMinMoves()+1)
 			movesCounts := 0
 			moveList := d.config.GetMoveList(config.DefaultMoveList)
+			doRandomSequence := generateBoolean(d.config.ProbabilityRandomSequence)
 			for i := 0; i < numSequences; i++ {
+				// Throw in a random sequence based on probability and ignore moves from the list.
+				if doRandomSequence {
+					tasks = append(tasks, fmt.Sprintf("Do your own move %d", i))
+					movesCounts += 8
+					continue
+				}
 				r := rand.Intn(len(moveList))
 				tasks = append(tasks, moveList[r].Name)
 				movesCounts += moveList[r].Counts
@@ -298,6 +324,10 @@ func (d *Display) movesScreen() fyne.CanvasObject {
 		}
 	}()
 	return container
+}
+
+func generateBoolean(probability int) bool {
+	return rand.Float64() < float64(probability)/100.0
 }
 
 // Screen defines the data structure for a tutorial

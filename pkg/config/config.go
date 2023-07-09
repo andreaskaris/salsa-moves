@@ -52,12 +52,13 @@ type Text struct {
 }
 
 type Config struct {
-	Moves    Moves
-	MaxMoves int
-	MinMoves int
-	Text     Text
-	Song     Song
-	fileName string
+	Moves                     Moves
+	MaxMoves                  int
+	MinMoves                  int
+	ProbabilityRandomSequence int
+	Text                      Text
+	Song                      Song
+	fileName                  string
 }
 
 func Load(fileName string) (*Config, error) {
@@ -129,6 +130,14 @@ func (c *Config) SetMinMoves(min int) {
 
 func (c *Config) GetMinMoves() int {
 	return c.MinMoves
+}
+
+func (c *Config) SetProbabilityRandomSequence(p int) {
+	c.ProbabilityRandomSequence = p
+}
+
+func (c *Config) GetProbabilityRandomSequence() int {
+	return c.ProbabilityRandomSequence
 }
 
 func (c *Config) GetBPM() int {
